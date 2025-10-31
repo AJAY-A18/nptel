@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IIoT — Full Quiz (Weeks 0–12)</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --ok: #16a34a;
+      --err: #dc2626;
+      --muted: #64748b;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: #0f172a;
+      padding: 18px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1 { text-align:center; margin: 8px 0 18px 0; font-size:24px; }
+    details {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+    }
+    summary {
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      outline: none;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .week-meta { font-size: 13px; color: var(--muted); font-weight:600; }
+    .score-inline { background:#f1f5f9; padding:6px 10px; border-radius:8px; font-weight:700; }
+    .questions { margin-top:12px; }
+    .qcard {
+      background: #fbfdff;
+      border-radius:10px;
+      padding:10px;
+      margin-bottom:10px;
+      border:1px solid #e6eef9;
+    }
+    .qtext { font-weight:600; margin-bottom:8px; }
+    .opts { display:flex; flex-direction:column; gap:6px; }
+    label.opt {
+      display:flex;
+      gap:10px;
+      align-items:center;
+      cursor:pointer;
+      padding:8px;
+      border-radius:8px;
+      border:1px solid transparent;
+      transition: background .12s, border-color .12s;
+    }
+    label.opt:hover { background: #f1f5f9; }
+  label.opt.tried { opacity: 0.6; }
+    input[type="radio"] { width:16px; height:16px; }
+    .feedback { margin-top:8px; font-weight:700; }
+    .ok { color:var(--ok); }
+    .bad { color:var(--err); }
+    .muted { color:var(--muted); font-weight:600; }
+    .top-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+    .nav {
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:18px;
+    }
+    .nav button { padding:8px 12px; border-radius:8px; border:none; cursor:pointer; background:var(--card); box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+    @media (max-width:600px) {
+      summary { flex-direction:column; align-items:flex-start; gap:6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IIoT — Quiz (Weeks 0 → 12)</h1>
+
+    <div class="nav" id="nav"></div>
+
+    <div id="weeks"></div>
+
+    <p style="text-align:center;color:var(--muted);margin-top:18px;">Click any option to get instant Correct / Incorrect. If you pick a wrong option you can try again until you find the correct answer.</p>
+  </div>
+
+<script>
+/*
+  Data structure: weeks[weekNumber] = { title, questions: [{ q, opts: [...], answer: 'a'|'b'|'c'|'d' (or 'a'/'b' for T/F), ... }] }
+  This file contains Weeks 0–12 as provided by the user.
+*/
+
+const weeks = {
+  0: {
+    title: "Week 0 — Basic Network Quiz (10 questions)",
+    questions: [
+      { q: "1. Which of the following is NOT a type of transmission media?", opts: ["a. Twisted pair cable","b. Optical fiber","c. Satellite","d. Router"], answer: "d" },
+      { q: "2. Which layer in the OSI model is responsible for end-to-end communication?", opts: ["a. Network layer","b. Data link layer","c. Session layer","d. Transport layer"], answer: "d" },
+      { q: "3. What is the default port number for HTTP?", opts: ["a. 21","b. 25","c. 80","d. 110"], answer: "c" },
+      { q: "4. Which of the following IP addresses belongs to Class C?", opts: ["a. 10.0.0.1","b. 172.16.0.1","c. 192.168.1.1","d. 224.0.0.1"], answer: "c" },
+      { q: "5. Which protocol is used to assign IP addresses dynamically?", opts: ["a. DNS","b. DHCP","c. FTP","d. SNMP"], answer: "b" },
+      { q: "6. Which protocol ensures reliable delivery of data?", opts: ["a. UDP","b. TCP","c. ICMP","d. ARP"], answer: "b" },
+      { q: "7. At which OSI layer does the IP protocol operate?", opts: ["a. Transport","b. Network","c. Data link","d. Physical"], answer: "b" },
+      { q: "8. Which device operates primarily at the Data Link Layer?", opts: ["a. Router","b. Gateway","c. Switch","d. Hub"], answer: "c" },
+      { q: "9. What is the time taken for a packet to travel from source to destination called?", opts: ["a. Bandwidth","b. Throughput","c. Jitter","d. Latency"], answer: "d" },
+      { q: "10. Which method is used for error detection in data frames?", opts: ["a. ARP","b. CRC","c. DNS","d. FTP"], answer: "b" }
+    ]
+  },
+
+  1: {
+    title: "Week 1 — Assignment 1 (15 questions)",
+    questions: [
+      { q: "1. Which sensor system type is characterized by an output that oscillates before reaching steady state?", opts: ["a. Zero order system","b. First order system","c. Second order system","d. Linear system"], answer: "c" },
+      { q: "2. Which of the following is NOT a correct example of a transducer?", opts: ["a. Microphone","b. Wire","c. Speaker","d. Antenna"], answer: "b" },
+      { q: "3. The response of which of the following sensors depends on the magnitude of the direction and orientation of input parameter?", opts: ["a. Scalar sensor","b. Passive sensor","c. Analog sensor","d. Vector sensor"], answer: "d" },
+      { q: "4. Which type of Zigbee node is responsible for network initialization and maintenance?", opts: ["a. Router","b. End Device","c. Coordinator","d. Sensor"], answer: "c" },
+      { q: "5. Which two layers does IEEE 802.15.4 provide a framework for?", opts: ["a. MAC and PHY","b. IP and TCP","c. HTTP and SSL","d. FTP and DNS"], answer: "a" },
+      { q: "6. How often are time slots allocated in Wireless HART?", opts: ["a. 1 per second","b. 10ms per slot","c. 100ms per slot","d. 1 second per device"], answer: "b" },
+      { q: "7. How do passive RFID tags operate?", opts: ["a. Use an internal battery","b. Use an external solar panel","c. Are powered by the reader inductively","d. Are manually activated"], answer: "c" },
+      { q: "8. Bluetooth technology is based on which type of networking?", opts: ["a. Mesh","b. Piconet (Ad-hoc)","c. Star","d. Bus"], answer: "b" },
+      { q: "9. What process is used by Z-wave to bypass radio dead spots?", opts: ["a. Network Slicing","b. Subnetting","c. Healing","d. Network Partitioning"], answer: "c" },
+      { q: "10. Which of the following best represents the ‘trunk’ in the IoT analogy?", opts: ["a. ARM (Architectural Reference Model)","b. IoT applications","c. Communication protocols","d. End-user interfaces"], answer: "a" },
+      { q: "11. What is the function of the Registration Interface (RI) in CoRE?", opts: ["a. Processes user login","b. Assigns MAC addresses","c. Encrypts transmitted data","d. Registers IoT resources to the directory"], answer: "d" },
+      { q: "12. Which of the following is not a message type in CoAP?", opts: ["a. CON","b. NON","c. RST","d. ECHO"], answer: "d" },
+      { q: "13. Which of the following is an IP-based solution proposed by IETF for IoT?", opts: ["a. Zigbee Alliance","b. Bluetooth SIG","c. CoRE","d. Wi-Fi Alliance"], answer: "c" },
+      { q: "14. Sensor calibration is typically used for weeding-out repeatable errors in sensor readings. (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "15. Which of the following is NOT true about WirelessHART?", opts: ["a. It is a license-free protocol","b. It is not compatible with any legacy devices","c. WirelessHART uses the IEEE 802.15.4 standard for its protocols designing","d. WirelessHART makes device placements more accessible and cheaper"], answer: "b" }
+    ]
+  },
+
+  2: {
+    title: "Week 2 — Assignment 2 (15 questions)",
+    questions: [
+      { q: "1. Which technological innovation drove the First Industrial Revolution?", opts: ["a. Electricity and the assembly line","b. Invention of steam engine and construction of railways","c. Semiconductor fabrication techniques","d. Artificial Intelligence and Cyber-Physical Systems"], answer: "b" },
+      { q: "2. Which of the following sectors is considered as the conventional application area for robots?", opts: ["a. Automotive industry","b. Precision agriculture","c. Nursing","d. Space exploration"], answer: "a" },
+      { q: "3. Fill in the blanks. A depression, compared to a recession, is characterized by .", opts: ["a. Increased investment in manufacturing","b. Shorter duration of economic hardship","c. Lower unemployment rates","d. Higher levels of economic damage and longer duration"], answer: "d" },
+      { q: "4. In a manufacturing industry, which system is described as the “main nervous system”?", opts: ["a. Supply-Chain Management (SCM)","b. Information and Communication Technology (ICT)","c. Energy-price monitoring","d. Human-resources planning"], answer: "b" },
+      { q: "5. Fill in the blanks. Emerging markets are expected to be found primarily in .", opts: ["a. Developed countries","b. Developing countries","c. Polar regions","d. Nations with zero population growth"], answer: "b" },
+      { q: "6. Which of the following is a key feature of Lean production approach?", opts: ["a. It emphasizes automation over manual labor","b. It focuses solely on financial outcomes","c. It considers the customer’s perspective","d. It aims to increase inventory levels"], answer: "c" },
+      { q: "7. Alongside Jidoka, Lean production is founded on which second pillar?", opts: ["a. Kaizen","b. Just-in-Time","c. Kanban","d. Total Productive Maintenance"], answer: "b" },
+      { q: "8. What is the first step in the “5 steps of walking a value stream”?", opts: ["a. Build a leadership team","b. Walk it – discuss value and list ideas","c. Focus on a single value stream","d. Schedule follow-up"], answer: "c" },
+      { q: "9. What is included among the fundamental building blocks of a smart business model?", opts: ["a. Marketing campaigns","b. Customer values and key processes","c. Warehouse locations","d. Stock exchange metrics"], answer: "b" },
+      { q: "10. Which of the following represents the key attributes of a smart business model?", opts: ["a. Value proposition","b. Revenue streams","c. Technologies","d. All of these"], answer: "d" },
+      { q: "11. Big Data analytics in smart factories can help with ____.", opts: ["a. Generating knowledge","b. Reducing data storage","c. Eliminating sensors","d. Increasing manual paperwork"], answer: "a" },
+      { q: "12. Why are smart factories increasingly necessary in today’s industry?", opts: ["a. They reduce the number of products needed","b. They support rigid, static manufacturing systems","c. They help achieve high production in less time with reduced risks of failure","d. They operate only in low-demand markets"], answer: "c" },
+      { q: "13. Smart Grid is considered as a supporting technology for Smart Factories. (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "14. Timely delivery and reliability are highlighted within sustainability under which supply-related concept?", opts: ["a. Supply-Chain Management loop","b. Single-sourcing","c. Random demand generation","d. Personal mail delivery"], answer: "a" },
+      { q: "15. Industry 4.0 is commonly referred to as the fourth industrial revolution pertaining to digitization in the manufacturing industry. (True/False)", opts: ["a. True","b. False"], answer: "a" }
+    ]
+  },
+
+  3: {
+    title: "Week 3 — Assignment 3 (15 questions)",
+    questions: [
+      { q: "1. What distinguishes CPS from traditional embedded systems?", opts: ["a. CPS are always smaller in size","b. CPS have limited computational power","c. CPS are networked set of embedded systems and not resource-constrained","d. CPS rely solely on manual controls"], answer: "c" },
+      { q: "2. Reactive Computation, as a feature of CPS, primarily involves:", opts: ["a. Performing computations only when explicitly commanded by a user.","b. Interacting with the environment in an ongoing manner through observed inputs and outputs.","c. Executing a fixed set of operations without external influence.","d. Storing large amounts of data for later analysis."], answer: "b" },
+      { q: "3. A smart traffic management system that monitors traffic signals and cameras in real-time to optimize traffic flow — this CPS application belongs to which domain?", opts: ["a. Healthcare","b. Smart Grid","c. Transportation","d. Industry"], answer: "c" },
+      { q: "4. Which of the following are the four key parts that enable collaboration productivity in Industry 4.0?", opts: ["a. IT Proliferation, Single Source of Truth, Industrialization, Coordination","b. Hardware, Software, Networks, People","c. Planning, Execution, Monitoring, Control","d. Design, Development, Testing, Deployment"], answer: "a" },
+      { q: "5. What is identified as a major challenge for PLM in Industry 4.0?", opts: ["a. Lack of skilled workers","b. High energy consumption","c. Short product lifecycle and increasing outsourcing","d. Limited internet connectivity"], answer: "c" },
+      { q: "6. How does Augmented Reality (AR) function in a user’s environment?", opts: ["a. Replaces the real world with a fictional setting","b. Adds digital elements into the actual environment","c. Creates a full simulation with no real-world connection","d. Only uses audio input"], answer: "b" },
+      { q: "7. Which sensor modalities are supported by Augmented Reality?", opts: ["a. Auditory only","b. Tactile only","c. Visual, auditory, and haptic","d. Taste and smell"], answer: "c" },
+      { q: "8. According to Patterson, what is Artificial Intelligence (AI)?", opts: ["a. Deals with studying and creation of computer systems exhibiting some form of intelligent behavior","b. A method of transmitting wireless data","c. A system that replicates human hardware","d. A mechanical replacement for programming languages"], answer: "a" },
+      { q: "9. Which of the following is NOT listed as a scope of AI?", opts: ["a. Games","b. Data Entry","c. Natural Language Processing (NLP)","d. Robotics"], answer: "b" },
+      { q: "10. Which of the following is listed as a challenge of AI in IIoT?", opts: ["a. Increasing efficiency","b. Saving costs","c. Understanding data","d. Boosting resources"], answer: "c" },
+      { q: "11. 'Data whose meaning is constantly changing' best describes which characteristic of Big Data?", opts: ["a. Variety","b. Veracity","c. Variability","d. Visualization"], answer: "c" },
+      { q: "12. Which distributed file system derived from GFS is mentioned for Big Data storage?", opts: ["a. HDFS","b. NoSQL","c. SQL","d. RDBMS"], answer: "a" },
+      { q: "13. Why are traditional Data Warehouse architectures generally not suitable for Big Data applications?", opts: ["a. They are designed for unstructured data.","b. They lack the ability to perform parallel processing.","c. They cannot handle Big Data characteristics and need distributed, parallel, scale-out frameworks","d. They are too expensive for Big Data."], answer: "c" },
+      { q: "14. ______ acts as the interface for different applications during the entire product lifecycle management.", opts: ["a. Product Lifecycle Management","b. Customer Relationship Management","c. Enterprise Resource Planning","d. Manufacturing Execution System"], answer: "a" },
+      { q: "15. Which of the following statements is incorrect about Big Data?", opts: ["a. Big data analytics can process real-time data from IoT devices and store them using various storage schemes.","b. Big data consists only of structured datasets generated by IoT applications.","c. Classification of big data depends on volume, variety, value, velocity, veracity.","d. Big data can be used to analyze patterns in network behavior, customer experiences, and connectivity issues."], answer: "b" }
+    ]
+  },
+
+  4: {
+    title: "Week 4 — Assignment 4 (15 questions)",
+    questions: [
+      { q: "1. Which component of cybersecurity focuses on maintaining the availability, integrity, and confidentiality of business data?", opts: ["a. Network Security","b. Operational Security","c. Information Security","d. End-user Education"], answer: "c" },
+      { q: "2. Network security combines multiple layers of defenses at which locations?", opts: ["a. At the edge and in the network.","b. Only within the network’s core.","c. Only at the edge of the network.","d. At individual user devices only"], answer: "a" },
+      { q: "3. Why are IIoT Security Standards required when diverse systems and equipment are integrated on a smart factory floor?", opts: ["a. To reduce the cost of implementing IIoT.","b. Because leaving security to individual IIoT implementers is dangerous and every weak line puts the whole factory at risk.","c. To ensure that only new systems are implemented, not legacy ones.","d. To increase the complexity of the smart factory floor."], answer: "b" },
+      { q: "4. In IIoT, where are sensors and actuators primarily used compared to traditional automation?", opts: ["a. Only for critical elements","b. Almost everywhere to control, enhance, and optimize various functions","c. Exclusively for emergency systems","d. To replace human operators entirely"], answer: "b" },
+      { q: "5. In mining, how do sensor networks with gas sensors, strata monitoring devices, and RFID tags contribute?", opts: ["a. They only help in tracking miners’ locations.","b. They are primarily used for communication between miners.","c. They replace the need for human inspection.","d. They provide early disaster warning, monitor working conditions, and help locate miners."], answer: "d" },
+      { q: "6. Who coined the term 'Industrial Internet'?", opts: ["a. IBM","b. General Electric (GE)","c. Intel","d. Siemens"], answer: "b" },
+      { q: "7. What are the three key elements of the Industrial Internet?", opts: ["a. Big Data, Cloud, and AI","b. Intelligent Machines, Advanced Analytics, People at Work","c. Sensors, Processors, and Actuators","d. Software, Hardware, and Middleware"], answer: "b" },
+      { q: "8. In a milk packaging unit, how is flow measured?", opts: ["a. Using a thermometer","b. Via a spinning impeller that sends signals when milk flows","c. With a smart camera","d. Using a GPS module"], answer: "b" },
+      { q: "9. Which component converts analog data to digital data in a smart sensor node?", opts: ["a. Processor","b. Memory","c. ADC","d. DAC"], answer: "c" },
+      { q: "10. In agriculture, what is the primary use of smart sensors like soil and water sensors?", opts: ["a. To track real-time objects.","b. To predict driver destinations.","c. To prevent patient falls in hospitals.","d. For accurate use of fertilizers and determining crop health."], answer: "d" },
+      { q: "11. Thames Water’s smart water management system primarily benefits from ____.", opts: ["a. Data monetization and pay-per-use models.","b. Sensor-based equipment status monitoring and failure detection.","c. AR-based problem diagnosis.","d. Controlled power generation using weather forecasts."], answer: "b" },
+      { q: "12. Interoperability in IIoT design philosophy refers to ____.", opts: ["a. Empowering smart objects to reduce human intervention.","b. Facilitating communication between heterogeneous objects.","c. Virtualization of objects and digital models.","d. Enabling smart objects to take independent decisions."], answer: "b" },
+      { q: "13. In the 5C architecture of CPS, what does the 'Conversion Layer' do?", opts: ["a. Interprets sensors data for information","b. Stores backup data","c. Converts analog signal to mechanical action","d. Synchronizes robotic arms"], answer: "a" },
+      { q: "14. In the case of spear phishing vs email phishing: the statement provided is True/False (note: question text says False).", opts: ["a. True","b. False"], answer: "b" },
+      { q: "15. Which statement is incorrect about the CIA triad?", opts: ["a. Confidentiality ensures that information is concealed and protected from unauthorized access.","b. Integrity refers to maintaining the accuracy and consistency of data, and can always be violated by intentional attacks.","c. Availability is compromised when authorized users are denied access to information due to network attacks like DDoS.","d. None of these"], answer: "b" }
+    ]
+  },
+
+  5: {
+    title: "Week 5 — Assignment 5 (15 questions)",
+    questions: [
+      { q: "1. According to the ICP DAS framework for Industry 4.0, under which category does 'System health diagnosis' fall?", opts: ["a. Energy","b. Safety","c. M2M","d. Manufacturing"], answer: "d" },
+      { q: "2. Kaeser Kompressoren coined a new term for pay-per-cubic-meter model. What is it called?", opts: ["a. Renting Model","b. Selling Model","c. Subscription Model","d. Air-as-a-Service"], answer: "d" },
+      { q: "3. Which company uses smart glasses for fault detection in manufacturing?", opts: ["a. KUKA","b. Maersk","c. Boeing","d. Cisco"], answer: "c" },
+      { q: "4. What is a business model as defined by 'Business Model Generation'?", opts: ["a. The organizational and financial architecture of a business","b. The rationale of how an organization creates, delivers, and captures value","c. A description of how a business intends to earn profits","d. The network of suppliers and partners that optimize a business"], answer: "b" },
+      { q: "5. Which IoT business model relieves the customer from ownership and focuses on 'Pay-per-outcome'?", opts: ["a. Subscription Model","b. Asset-Sharing Model","c. Outcome-Based Model","d. IoT-as-a-Service"], answer: "c" },
+      { q: "6. In a Cloud-Based Business Model, how do customers typically access services?", opts: ["a. By outright purchase","b. By manual installation","c. Via government funding","d. Through temporary leasing of resources"], answer: "d" },
+      { q: "7. Primary purpose of the revenue model in Service-Oriented Business Models in IIoT?", opts: ["a. Only subscription fees","b. Physical sales","c. Monetization of collected data","d. Rental income"], answer: "c" },
+      { q: "8. Which type of Cloud-Based Business Model aims at providing required hardware and software online in the cloud?", opts: ["a. SaaS","b. PaaS","c. IaaS","d. BaaS"], answer: "c" },
+      { q: "9. What is the purpose of the Industrial Internet Reference Architecture (IIRA)?", opts: ["a. Allowing interoperability and guiding IIoT technologies","b. Reducing network speed","c. Designing personal computer systems","d. Building only mobile applications"], answer: "a" },
+      { q: "10. An IIoT product being tested across continents — which organization likely facilitates this?", opts: ["a. IEEE","b. Industrial Internet Consortium (IIC)","c. ISO","d. NIST"], answer: "b" },
+      { q: "11. Example of a Lagging KPI for OSH?", opts: ["a. Frequency of observed unsafe behaviour","b. Number of OSH audits","c. Number of lost-time incident frequency rate","d. Percentage of managers with adequate OSH training"], answer: "c" },
+      { q: "12. In the usage Viewpoint, which element defines the conditions under which an activity is initiated?", opts: ["a. Workflow","b. Effects","c. Constraints","d. Trigger"], answer: "d" },
+      { q: "13. In the IIRA Usage Viewpoint, what is the basic unit of work?", opts: ["a. System","b. Network","c. Component","d. Task"], answer: "d" },
+      { q: "14. Which represents key features of the process-oriented business model?", opts: ["a. Execution of various business processes","b. Presence of process owners","c. Evaluation of process performance","d. All of these"], answer: "d" },
+      { q: "15. Smart grid provides two-way communication between consumers and suppliers; this is ____.", opts: ["a. Smart grid","b. Load Balancer","c. Railway Signaling System","d. None of these"], answer: "a" }
+    ]
+  },
+
+  6: {
+    title: "Week 6 — Assignment 6 (15 questions)",
+    questions: [
+      { q: "1. In the manufacturing process diagram, which unit comes immediately after the 'Quality Testing Unit'?", opts: ["a. Packaging Unit","b. Production Unit","c. Product Counting Unit","d. Transporting Unit"], answer: "c" },
+      { q: "2. The analog temperature sensor LM35 generates an output voltage that is linearly proportional to what temperature scale?", opts: ["a. Fahrenheit","b. Kelvin","c. Celsius","d. Rankine"], answer: "c" },
+      { q: "3. The MQ-2 gas sensor detects concentration of which gases?", opts: ["a. Oxygen, Nitrogen, CO2","b. LPG, propane, hydrogen","c. Methane, Ammonia, CO","d. Ozone, SO2, NOx"], answer: "b" },
+      { q: "4. What happens to the resistance of an n-type MOS sensor when exposed to a reducing gas?", opts: ["a. It increases with respect to the Baseline resistance","b. It decreases with respect to the Baseline resistance","c. It remains unchanged","d. It fluctuates randomly"], answer: "b" },
+      { q: "5. According to the working principle of MOS gas sensors, what is the 'Optimum Temperature'?", opts: ["a. The maximum temperature the sensor can withstand","b. The minimum temperature required for operation","c. The particular temperature at which the sensor gives the best response","d. The temperature of the surrounding environment"], answer: "c" },
+      { q: "6. ModBus-TCP uses which protocol suite for data transmission?", opts: ["a. RS-232","b. TCP/IP & Ethernet","c. CAN","d. IEEE 802.15.4"], answer: "b" },
+      { q: "7. What does EtherCAT stand for?", opts: ["a. Ethernet Control and Transmission","b. Ethernet Common Automation Technology","c. Ethernet Control Automation Technology","d. Ethernet Communication and Telemetry"], answer: "c" },
+      { q: "8. In the ModBus-TCP data frame, what is the name of the 7-byte header that identifies the ADU?", opts: ["a. TCP Header","b. PDU Header","c. MBAP (MODBUS Application Protocol) header","d. Ethernet Header"], answer: "c" },
+      { q: "9. Which variant of CC-Link offers the highest transmission rate of 1 Gbps?", opts: ["a. Standard CC-Link","b. CC-Link LT","c. CC-Link Safety","d. CC-Link IE (Industrial Ethernet)"], answer: "d" },
+      { q: "10. Profibus is based on which international standard?", opts: ["a. IEC 61158","b. IEEE 802.3","c. ISO 9001","d. IEC 61850"], answer: "a" },
+      { q: "11. What is the Availability requirement for uRLLC?", opts: ["a. 90% availability","b. 99% availability","c. 99.9999% availability (6-nines)","d. 50% availability"], answer: "c" },
+      { q: "12. What is the end-to-end round trip latency supported by the Tactile Internet?", opts: ["a. < 10 ms","b. < 1 ms","c. < 100 ms","d. < 250 ms"], answer: "b" },
+      { q: "13. Which frequency bands are used by 5G NR?", opts: ["a. Only below 1 GHz","b. Low band (< 1 GHz), middle band (1-6 GHz), and high band (>24 GHz) mmWave","c. Only Wi-Fi bands","d. Satellite communication bands"], answer: "b" },
+      { q: "14. PROFINet protocol handles data transmission of large packets between PLCs and PCs and integrates with Internet (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "15. DeviceNet was designed by Rockwell Automation to enable communications between ____ and ____.", opts: ["a. PLCs, field devices","b. PLCs, HMIs","c. Routers, enterprise servers","d. SCADA systems, cloud platforms"], answer: "a" }
+    ]
+  },
+
+  7: {
+    title: "Week 7 — Assignment 7 (15 questions)",
+    questions: [
+      { q: "1. Which modulation technique does LoRa use?", opts: ["a. Amplitude Modulation","b. Frequency Modulation","c. Chirp Spread Spectrum","d. Time Division Multiplexing"], answer: "c" },
+      { q: "2. SIGFOX network gives performance of up to __ messages/day with payload of __ bytes/message. Fill:", opts: ["a. 140, 12","b. 50, 2","c. 60, 3","d. 100, 10"], answer: "a" },
+      { q: "3. Key difference between a Zigbee Router and a Zigbee End Device?", opts: ["a. A router can relay information to other nodes, while an end device cannot.","b. An end device is the root of the network, while a router is not.","c. A router can only connect to a coordinator, while an end device can connect to any node.","d. There is no functional difference between them."], answer: "a" },
+      { q: "4. What software is used to configure Xbee modules before communication?", opts: ["a. Arduino IDE","b. Python","c. XCTU","d. Wireshark"], answer: "c" },
+      { q: "5. Which characteristic of IIoT data refers to heterogenous sensors with different metrics, precision, formats?", opts: ["a. Real-time","b. Dynamic heterogeneity","c. Polymorphism","d. Correlation"], answer: "c" },
+      { q: "6. What is the role of middleware in an IIoT system?", opts: ["a. Physical hardware layer of sensors and actuators","b. Final user-facing application","c. Communication protocol for data transfer","d. Software layer between infrastructure and application layers that provides services and supports heterogeneity"], answer: "d" },
+      { q: "7. Which type of analytics answers 'What will happen and why?'", opts: ["a. Predictive","b. Descriptive","c. Diagnostic","d. Prescriptive"], answer: "a" },
+      { q: "8. Which type of analytics aims to determine the best possible business decision?", opts: ["a. Predictive","b. Descriptive","c. Diagnostic","d. Prescriptive"], answer: "d" },
+      { q: "9. What is the primary goal of the FarmBeats platform?", opts: ["a. To manage smart city infrastructure","b. To enable data-driven precision agriculture","c. To automate cognitive manufacturing","d. To monitor the health of vineyards"], answer: "b" },
+      { q: "10. In the iRobot-Factory architecture, which component handles cloud-based, high-performance, long-term data analytics using AI?", opts: ["a. Intelligent Terminal","b. Cognitive Engine","c. Edge Computing Node","d. Intelligent Device Unit"], answer: "b" },
+      { q: "11. In an ICS, what are the 'Set Points'?", opts: ["a. The standard values of process parameters for controlled operation","b. The values of process parameters measured by sensors","c. The process variables that are modified by the controller","d. The final output of the industrial process"], answer: "a" },
+      { q: "12. Which best describes a Closed Loop (Feedback) Control system?", opts: ["a. Control decisions made without considering the process variable","b. Operates independently of the measured output","c. Control decision depends on the measured value of the process variable","d. Not used in industrial automation"], answer: "c" },
+      { q: "13. PLCs comprise of ____.", opts: ["a. Processor unit, memory unit, power supply and communication modules","b. Sensor array, signal generator, analog filter, and PLC terminal","c. Actuator controller, logic gate module, and cooling system","d. Voltage regulator, touchscreen unit, hard disk, and keyboard interface"], answer: "a" },
+      { q: "14. DHT sensor in IoT measures both humidity and temperature and Adafruit provides a library for it. (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "15. Role of SCADA in industrial processes?", opts: ["a. Only hardware-based system for local control","b. Enables real-time remote monitoring and control with data visualization through HMI","c. Vendor-specific protocol only for power plants","d. Replacement for PLCs without logging or visualization"], answer: "b" }
+    ]
+  },
+
+  8: {
+    title: "Week 8 — Assignment 8 (15 questions)",
+    questions: [
+      { q: "1. What is the goal of prognostic analytics in IIoT?", opts: ["a. Identify root cause of an anomaly","b. Inform about remaining useful life of an asset","c. Detect real-time behavior","d. Filter low-quality data"], answer: "b" },
+      { q: "2. What are the three types of IIoT Analytics?", opts: ["a. Logical, Statistical, and Neural","b. Predictive, Adaptive, and Reactive","c. Descriptive, Predictive, and Prescriptive","d. Linear, Non-linear, and Mixed"], answer: "c" },
+      { q: "3. Key difference between Machine Learning and Deep Learning?", opts: ["a. ML uses neural networks, DL does not","b. DL requires Feature extraction, ML does not","c. ML requires manual feature extraction, DL learns features automatically","d. DL is only unsupervised"], answer: "c" },
+      { q: "4. Data Science is intersection of Computer Science, Domain Expertise, and ____?", opts: ["a. Mathematics and Statistical Research","b. Mechanical Engineering","c. Business Management","d. Psychology"], answer: "a" },
+      { q: "5. Supervised learning is divided into which two main problem types?", opts: ["a. Clustering and Association","b. K-Means and Fuzzy c-Means","c. State and Action","d. Regression and Classification"], answer: "d" },
+      { q: "6. In Reinforcement Learning, an 'agent' learns from ____?", opts: ["a. An environment by taking actions and receiving rewards or penalties","b. An unlabeled dataset with hidden patterns","c. A labeled dataset provided by a supervisor","d. A set of predefined rules"], answer: "a" },
+      { q: "7. How does DL performance compare to traditional ML as data increases?", opts: ["a. Performance levels off the same","b. ML continues to improve while DL levels off","c. DL often continues to improve with more data, ML may level off","d. Both decrease with more data"], answer: "c" },
+      { q: "8. Deep learning breaks a complex task into simpler tasks following which principle?", opts: ["a. A nested hierarchy of concepts","b. A linear regression model","c. Random decision making","d. A last-in, first-out stack"], answer: "a" },
+      { q: "9. Which statement about MindSphere is false?", opts: ["a. It is a cloud-based operating system platform for IoT.","b. It offers enterprise-oriented solutions.","c. It is an open PaaS that integrates with AWS.","d. It is a mobile app used only for home automation."], answer: "d" },
+      { q: "10. A major reason for needing cloud computing in IIoT?", opts: ["a. To decrease the number of connected devices.","b. To handle huge unorganized and heterogeneous data including M2M sensors.","c. To ensure all data has same quality.","d. To reduce networking needs."], answer: "b" },
+      { q: "11. Which IIoT platform provides a storage service called C3 Data Lake?", opts: ["a. GE Predix","b. Siemens MindSphere","c. C3 IoT","d. Uptake"], answer: "c" },
+      { q: "12. Which of the following is a characteristic of a good SLA?", opts: ["a. Vague and unmeasurable","b. Unachievable","c. Uncontrollable","d. Quantifiable and Mutually Acceptable"], answer: "d" },
+      { q: "13. Which represents characteristics of a good SLA?", opts: ["a. Affordable","b. Achievable","c. Quantifiable","d. All of these"], answer: "d" },
+      { q: "14. CNNs and RNNs are two popular deep learning methods (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "15. Key characteristics that classify data as Big Data in IoT?", opts: ["a. Accuracy, redundancy, scalability, latency, security","b. Volume, variety, value, velocity, veracity","c. Throughput, delay, integrity, topology, clustering","d. Capacity, compatibility, complexity, connectivity, coverage"], answer: "b" }
+    ]
+  },
+
+  9: {
+    title: "Week 9 — Assignment 9 (15 questions)",
+    questions: [
+      { q: "1. In Fog Computing architecture for IIoT, where are Fog Devices located?", opts: ["a. Above the Cloud layer.","b. Between the Cloud and the Industrial End Devices.","c. As part of the Industrial End Devices.","d. Inside the Cloud."], answer: "b" },
+      { q: "2. Which of the following is not a fog platform provider?", opts: ["a. FogHorn","b. Nebbiolo Technologies","c. Crosser","d. Sony"], answer: "d" },
+      { q: "3. Which command in R shows reserved words like 'if','else','TRUE','NULL'?", opts: ["a. ?reserved","b. list.reserved()","c. show.words()","d. getKeywords()"], answer: "a" },
+      { q: "4. What is the result of 15 %in% N if N = 1..10 in R?", opts: ["a. TRUE","b. 1","c. FALSE","d. An error"], answer: "c" },
+      { q: "5. Which is NOT a data structure in Julia?", opts: ["a. Tuples","b. Dictionary","c. Coroutine","d. Arrays"], answer: "c" },
+      { q: "6. Which is NOT an essential NIST cloud characteristic?", opts: ["a. On-demand self-service","b. Broad network access","c. Resource pooling","d. Manual server configuration"], answer: "d" },
+      { q: "7. Which does NOT represent a NoSQL database?", opts: ["a. Key-value databases","b. Column-oriented databases","c. Document-oriented databases","d. Relational databases"], answer: "d" },
+      { q: "8. In HDFS, Namenode stores actual data blocks while Datanodes maintain metadata. True/False?", opts: ["a. True","b. False"], answer: "b" },
+      { q: "9. Which property of a DCN refers to its ability to support any service on any server at any time?", opts: ["a. Security","b. Reliability","c. Scalability","d. Agility"], answer: "d" },
+      { q: "10. Main architectural difference between DCell/BCube and Three-Tier topology?", opts: ["a. DCell and BCube are server-centric, providing better scalability and fault tolerance.","b. DCell and BCube are switch-centric, while Three-Tier is server-centric.","c. DCell/BCube use a single core switch creating single point of failure.","d. Three-Tier provides better server-to-server bandwidth."], answer: "a" },
+      { q: "11. Core principle of Software-Defined Data Center (SDDC)?", opts: ["a. All hardware must be from a single vendor.","b. The data center infrastructure is virtualized and abstracted from hardware.","c. Control and data planes are tightly coupled within hardware.","d. It relies on manual configuration for provisioning."], answer: "b" },
+      { q: "12. In SDN architecture, which plane contains physical forwarding devices?", opts: ["a. Data Plane","b. Control Plane","c. Application Plane","d. Management Plane"], answer: "a" },
+      { q: "13. Which protocol is commonly used between SDN controller and forwarding devices?", opts: ["a. OpenFlow","b. BGP","c. TCP/IP","d. HTTP"], answer: "a" },
+      { q: "14. Which platform is commonly required to perform executions on semi-structured data such as JSON or NoSQL?", opts: ["a. Oracle RDBMS","b. Microsoft Excel","c. Apache Hadoop","d. PowerPoint"], answer: "c" },
+      { q: "15. Why is Big Data analytics essential in Industry 4.0?", opts: ["a. To eliminate IoT devices","b. To store data only in relational DBs","c. To extract actionable insights for predictive maintenance, process optimization, and quality control","d. To eliminate cloud and fog computing"], answer: "c" }
+    ]
+  },
+
+  10: {
+    title: "Week 10 — Assignment 10 (15 questions)",
+    questions: [
+      { q: "1. μSDN in the SD-6TiSCH protocol stack minimizes control overhead (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "2. In SD-IIoT architecture, network monitoring is performed by which component?", opts: ["a. Application","b. Data Plane","c. Control Plane","d. All of these"], answer: "c" },
+      { q: "3. What are the basic goals of information security?", opts: ["a. Facilitate Availability, Integrity, and Confidentiality","b. Increase production cost and promote manual operations","c. Decrease scalability and interoperability","d. Increase latency and minimize throughput"], answer: "a" },
+      { q: "4. 'Resilience' in a Trustworthy IIoT system refers to:", opts: ["a. Safe operations without risks and injury","b. Protecting from unauthorized access/modification/destruction","c. Ability to function correctly under dynamic adversarial conditions","d. Restriction on data access"], answer: "c" },
+      { q: "5. Which is NOT a security requirement for Cloud Complied IIoT?", opts: ["a. OT infrastructure controlled at external cloud","b. Data from thousands of devices stored in cloud","c. Third-party services with trust-boundaries","d. Completely eliminating need to safeguard control systems from incoming cloud info"], answer: "d" },
+      { q: "6. Which statement is incorrect about protection of fog devices in IIoT?", opts: ["a. Fog devices require same security measures as end devices.","b. Standard cryptographic protocols are used for authentication between fog devices and cloud.","c. Lightweight cryptography is recommended for authenticating end devices.","d. Fog devices serve only as storage units without computing capability."], answer: "d" },
+      { q: "7. Which standard is associated with industrial automation and control systems security (OT security)?", opts: ["a. ISO/IEC 15408","b. NIST SP 800-144","c. IEC 62443","d. ISO 27017"], answer: "c" },
+      { q: "8. Which is incorrect about security requirements in Healthcare IoT?", opts: ["a. Device data protection can involve passwords, signatures, digital certificates.","b. Communication data is secured using ciphering and hashing.","c. Data stored in cloud may be protected with ACLs, signatures, certificates.","d. Security management in Healthcare IoT completely avoids cloud involvement to minimize risks."], answer: "d" },
+      { q: "9. Which company launched Construction IoT to monitor large sites?", opts: ["a. Kuka","b. DeWalt","c. Caterpillar","d. ABB"], answer: "b" },
+      { q: "10. Which is NOT a feature of a Smart Factory?", opts: ["a. Continuous real-time data","b. Maximize manual intervention","c. Prediction of future outcomes for preventive actions","d. Flexibility and adaptability"], answer: "b" },
+      { q: "11. YuMi initiative by ABB focuses on ____.", opts: ["a. Smart packaging with Bluetooth-only systems","b. Human–robot collaboration","c. Maximize human involvement","d. Robotic shelves for warehouses"], answer: "b" },
+      { q: "12. Purpose of SmartLabel initiative by GMA?", opts: ["a. Provide consumers detailed product info via QR codes","b. Control fridge temperature remotely","c. Enable drone delivery","d. Print manufacturing dates on packaging"], answer: "a" },
+      { q: "13. Impact of IoT in food industry?", opts: ["a. Increased wastage of food","b. Longer production cycles","c. Transparency of the supply chain","d. Complete elimination of temperature monitoring"], answer: "c" },
+      { q: "14. BioRanger device by Diagenetix is used for ____.", opts: ["a. Monitoring livestock health","b. Detecting microbial diseases in food","c. Monitoring soil moisture","d. Infusing flavors into beverages"], answer: "b" },
+      { q: "15. SCADA is a system of hardware and software components enabling remote control, monitoring, and maintenance of local and remote industrial processes in real-time (True/False)", opts: ["a. True","b. False"], answer: "a" }
+    ]
+  },
+
+  11: {
+    title: "Week 11 — Assignment 11 (15 questions)",
+    questions: [
+      { q: "1. What is the utility of Dexcom?", opts: ["a. Monitor oxygen saturation","b. Measure and track blood pressure remotely","c. Monitor glucose levels continuously and notify abnormalities","d. Detect asthma symptoms using inhalers"], answer: "c" },
+      { q: "2. Which of the following represents an IoT-based blood pressure monitoring system?", opts: ["A. iHealth BP5","B. Manual mercury sphygmomanometer","C. Analog wrist blood pressure cuff","D. Traditional glass thermometer"], answer: "a" },
+      { q: "3. Which is a key security requirement in IIoT healthcare?", opts: ["a. Confidentiality, Integrity, Authentication, Availability","b. Scalability, Flexibility, Latency, Mobility","c. Cloud storage, Big Data, Sensors, Networks","d. None of these"], answer: "a" },
+      { q: "4. Major benefit of a digital power plant using IIoT?", opts: ["a. More human supervision","b. Higher energy cost","c. Turbine’s performance improvement and remote monitoring","d. Manual performance tracking"], answer: "c" },
+      { q: "5. Which network is primarily used for in-home IoT devices in a smart grid?", opts: ["a. WAN","b. HAN","c. FAN","d. NAN"], answer: "b" },
+      { q: "6. Which AMI component is responsible for analyzing collected data?", opts: ["a. Smart meters","b. Meter data management system","c. PLCs","d. Remote terminal units"], answer: "b" },
+      { q: "7. Which type of RFID tag has onboard battery but no active transmitter?", opts: ["a. Passive","b. Active","c. Semi-passive","d. Beacon-based"], answer: "c" },
+      { q: "8. Which is not a key requirement for effective inventory management?", opts: ["a. Meet anticipated demand","b. Hedge against price increases","c. Increase inventory management cost","d. Smoothen flow of operations"], answer: "c" },
+      { q: "9. Major limitation of barcodes compared to RFID tags?", opts: ["a. Vulnerable to forgery","b. Require line of sight","c. Only one can be read at a time","d. All of these"], answer: "d" },
+      { q: "10. Which does NOT represent a type of network security?", opts: ["a. Detection of abnormal behavior by the network","b. Prevention of unauthorized sharing of sensitive data","c. Protection against phishing attack","d. Predictive maintenance of HVAC systems"], answer: "d" },
+      { q: "11. What does 'Integrity' in software security ensure?", opts: ["a. Assurance of data accuracy and consistency throughout its lifecycle","b. Verification of user credentials before granting access","c. Extent to which software remains available during component failures","d. Prevention of phishing attacks via email"], answer: "a" },
+      { q: "12. Which is not a major risk associated with AR/VR in industrial applications?", opts: ["a. Privacy and security issues","b. Compromised content on the screen by hackers","c. Intellectual property concerns","d. Reduced risk of accidents and improved worker safety"], answer: "d" },
+      { q: "13. Which is not a typical application of analytics in facility management?", opts: ["a. Managing energy consumption","b. Determining exact square-foot utilization of office space","c. Enhancing real-time gameplay in virtual environments","d. Operational cost-optimization"], answer: "c" },
+      { q: "14. Key benefit of IoT-based facility management?", opts: ["a. Increase unauthorized access","b. Real-time tracking and better customer experience","c. Increase all maintenance costs","d. Make manual monitoring mandatory"], answer: "b" },
+      { q: "15. Example of IoT-based body temperature monitoring device that provides suggestions based on age, temp, symptoms?", opts: ["a. Kinsa","b. Dexcom","c. iHealth","d. QardioCore"], answer: "a" }
+    ]
+  },
+
+  12: {
+    title: "Week 12 — Assignment 12 (15 questions)",
+    questions: [
+      { q: "1. Which of the following is NOT a benefit of using IoT in the oil and gas industry?", opts: ["a. Increase production efficiency","b. Save cost and time","c. Improve asset maintenance","d. Guarantee unlimited oil reserves"], answer: "d" },
+      { q: "2. Which is NOT a direct benefit of predictive maintenance using IoT in chemical industries?", opts: ["A. Increase in energy prices","B. Reduced equipment breakdown","C. Improve quality by efficient IoT analytics","D. Efficient and effective maintenance"], answer: "a" },
+      { q: "3. Which is NOT a feature of IoT-enabled logistics improvement in chemical industry?", opts: ["a. Ensuring product location using sensors/RFID","b. Tracking assets to prevent loss","c. Detecting contamination or possible attacks","d. Random manual checks without sensor support"], answer: "d" },
+      { q: "4. Which best describes condition-based monitoring in IoT-based chemical industries?", opts: ["a. Predicting quality by continuous monitoring and analyzing factors","b. Running manual quality inspections once a year","c. Ignoring environmental factors like weather","d. Setting random pricing models"], answer: "a" },
+      { q: "5. Which way IoT helps minimize supply chain risks in chemical industry?", opts: ["a. Conduct only annual manual audits","b. Real-time monitoring of equipment, materials, processes, environment, and workers","c. Ignoring process data and focusing only on final product delivery","d. Depending solely on human inspections"], answer: "b" },
+      { q: "6. IoT function in pharmaceutical industry related to drug safety?", opts: ["a. Automated surgery","b. Developing vaccines","c. Detecting adverse drug reactions and allergens","d. Building hospital infrastructure"], answer: "c" },
+      { q: "7. Key features of sixth-generation drone technology?", opts: ["a. Platform & payload adaptability, automated safety, intelligent piloting, full autonomy","b. Manual flight control with static camera","c. Single-axis gimbal with limited flight time","d. Pre-programmed routes with no adaptability"], answer: "a" },
+      { q: "8. UAV-based light displays are generally more expensive than fireworks and cannot be reused (True/False)", opts: ["a. True","b. False"], answer: "b" },
+      { q: "9. How are UAVs primarily used in precision forestry applications?", opts: ["a. To increase lumber pricing","b. To measure canopy height, density and volume estimation","c. To stop monitoring wildlife","d. To increase cost of forest maintenance"], answer: "b" },
+      { q: "10. UAVs perform tower inspection in telecommunications (True/False)", opts: ["a. True","b. False"], answer: "a" },
+      { q: "11. Application of UAVs in delivery and healthcare?", opts: ["a. Transporting blood samples to laboratories","b. Conducting remote surgeries","c. Manufacturing medical syringes","d. Hiring doctors for clinics"], answer: "a" },
+      { q: "12. Activities performed by UAVs in mining?", opts: ["a. Regular surface survey for optimized blast design","b. Manage stockpiles","c. Site exploration","d. All of these"], answer: "d" },
+      { q: "13. Not a reason why case studies are necessary?", opts: ["a. Provide in-depth knowledge and clarity","b. Explore real-life phenomena","c. Enable detailed quantitative and qualitative analysis","d. Guarantee faster industrial automation by themselves"], answer: "d" },
+      { q: "14. Not typically part of a case study subject matter?", opts: ["a. A small geographical area","b. A limited number of individuals","c. National-level government policies","d. Real-life related events"], answer: "c" },
+      { q: "15. Almost all mining industries rely on conveyer-belt based systems for loading/unloading of mined materials (True/False)", opts: ["a. True","b. False"], answer: "a" }
+    ]
+  }
+
+}; // end weeks object
+
+/* ---------- UI & behavior ---------- */
+
+const weeksContainer = document.getElementById('weeks');
+const nav = document.getElementById('nav');
+
+// build nav buttons for quick expand/collapse
+for (let w = 0; w <= 12; w++) {
+  const btn = document.createElement('button');
+  btn.textContent = `Week ${w}`;
+  btn.addEventListener('click', () => {
+    // open the details element
+    const d = document.getElementById(`week-${w}`);
+    if (d) {
+      d.open = true;
+      d.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  });
+  nav.appendChild(btn);
+}
+
+// helper to create question card
+function createQCard(qobj, qidx, weekIdx) {
+  const div = document.createElement('div');
+  div.className = 'qcard';
+  div.dataset.answered = 'false';
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.textContent = qobj.q;
+  div.appendChild(qtext);
+
+  const optsDiv = document.createElement('div');
+  optsDiv.className = 'opts';
+
+    qobj.opts.forEach((optText, i) => {
+    const letter = String.fromCharCode(97 + i); // 'a','b','c','d'
+    const label = document.createElement('label');
+    label.className = 'opt';
+    label.innerHTML = `<input type="radio" name="w${weekIdx}q${qidx}" value="${letter}"> <span>${optText}</span>`;
+    // click handler on label (so clicking text triggers)
+    label.addEventListener('click', (ev) => {
+      // if already answered correctly, ignore further clicks
+      if (div.dataset.answered === 'true') return;
+      // find radio input
+      const input = label.querySelector('input');
+      // if this specific option was already tried and disabled, ignore
+      if (input.disabled) return;
+      const val = input.value;
+      const fb = div.querySelector('.feedback');
+      if (val === qobj.answer.toLowerCase()) {
+        // correct: show success, lock question and update score
+        fb.textContent = "✅ Correct";
+        fb.className = 'feedback ok';
+        const scoreEl = document.getElementById(`score-w-${weekIdx}`);
+        // increment only once per question
+        scoreEl.dataset.score = Number(scoreEl.dataset.score) + 1;
+        scoreEl.textContent = `${scoreEl.dataset.score} / ${weeks[weekIdx].questions.length}`;
+        div.dataset.answered = 'true';
+        // disable all inputs for this question
+        div.querySelectorAll('input').forEach(inp => inp.disabled = true);
+      } else {
+        // incorrect: show feedback and disable only the clicked option so it can't be retried
+        fb.textContent = "❌ Incorrect — try another option";
+        fb.className = 'feedback bad';
+        // mark this option as tried and disable it
+        input.disabled = true;
+        label.classList.add('tried');
+        // clear selection if any
+        try { input.checked = false; } catch (e) { /* ignore */ }
+      }
+    });
+
+    optsDiv.appendChild(label);
+  });
+
+  div.appendChild(optsDiv);
+
+  const fb = document.createElement('div');
+  fb.className = 'feedback muted';
+  fb.textContent = '';
+  div.appendChild(fb);
+
+  return div;
+}
+
+// render each week
+for (let w = 0; w <= 12; w++) {
+  const wk = weeks[w];
+  if (!wk) continue;
+  const d = document.createElement('details');
+  d.id = `week-${w}`;
+
+  const summary = document.createElement('summary');
+  summary.innerHTML = `<div style="display:flex;gap:12px;align-items:center;"><span style="font-size:16px">${wk.title}</span></div>`;
+
+  const meta = document.createElement('div');
+  meta.className = 'week-meta';
+  meta.style.marginTop = '8px';
+  const scoreSpan = document.createElement('div');
+  scoreSpan.className = 'score-inline';
+  scoreSpan.id = `score-w-${w}`;
+  scoreSpan.dataset.score = 0;
+  scoreSpan.textContent = `0 / ${wk.questions.length}`;
+  meta.appendChild(scoreSpan);
+
+  summary.appendChild(meta);
+  d.appendChild(summary);
+
+  const content = document.createElement('div');
+  content.className = 'questions';
+
+  // create question cards
+  wk.questions.forEach((qobj, qi) => {
+    content.appendChild(createQCard(qobj, qi, w));
+  });
+
+  d.appendChild(content);
+  weeksContainer.appendChild(d);
+}
+
+/* Accessibility: keyboard support for radiobutton selection via Enter/Space on labels */
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' || e.key === 'Enter') {
+    // prevent page scroll on space
+    if (document.activeElement && document.activeElement.tagName === 'LABEL') {
+      e.preventDefault();
+      document.activeElement.click();
+    }
+  }
+});
+</script>
+</body>
+</html>
